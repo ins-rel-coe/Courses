@@ -1,0 +1,96 @@
+import pandas as pd
+
+drinks = pd.read_csv("drinks.csv")
+lifeExp = pd.read_csv("lifeexpectancy.csv")
+
+# Inspect your data first!
+drink_df = drinks["country"].unique()
+lifeExp_df = lifeExp["Country"].unique()
+
+# Combine unique entries
+mismatch = list(set(drink_df).symmetric_difference(set(lifeExp_df)))
+mismatch = sorted(mismatch)
+mismatch = pd.DataFrame(mismatch,
+                        columns=["Country"])
+
+# Get common entries
+match = list(set(drink_df).intersection(set(lifeExp_df)))
+match = sorted(match)
+match = pd.DataFrame(match,
+                     columns=["Country"])
+
+# Merge, save Excel file, and edit outside Python
+country_list = match.append(mismatch)
+country_list.to_excel("country_list.xlsx", sheet_name="Sheet1",
+                      header=True,
+                      index=False)  # Edit and save to a new filename
+
+# Load country list after editing
+country_ref = pd.read_excel("country_ref.xlsx",
+                            sheet_name="Sheet1",
+                            header=0)
+
+# Recode countries in both dataframes
+drinks["country"] = drinks["country"].map(
+        country_ref.set_index("Country")["Recode"]
+        )
+
+lifeExp["Country"] = lifeExp["Country"].map(
+        country_ref.set_index("Country")["Recode"]
+        )
+# Check mismatches again
+drink_df = drinks["country"].unique()
+lifeExp_df = lifeExp["Country"].unique()
+
+mismatch = list(set(drink_df).symmetric_difference(set(lifeExp_df)))
+mismatch = sorted(mismatch)
+
+# Solution for problem no. 1
+# Columns needed: 2013, life expectancy at birth, male & female, B countries, display
+problem_1 = lifeExp.loc[lifeExp["Year"]==2013]
+problem_1 = problem_1.loc[problem_1["Gho"]=="Life expectancy at birth (years)"]
+problem_1 = problem_1.loc[problem_1["Sex"]=="Both sexes"]
+problem_1 = problem_1.loc[problem_1["Country"].str.contains(r"^B",
+                          regex=True)]
+
+# Then merge with beer; Rename column first
+drinks = drinks.rename(
+        columns={
+                "country": "Country"
+                }
+        )
+ref = ["Country", "beer_servings"]
+drink_merge = drinks[ref]
+problem_1 = problem_1.merge(drink_merge,
+                            on="Country",
+                            how="left")
+
+# Solution for problem no. 2
+# Columns needed: 2012, life expectancy at age 60, male, western pacific,
+# lower middle income group, display
+problem_2 = lifeExp.loc[lifeExp["Year"]==2012]
+problem_2 = problem_2.loc[problem_2["Gho"]=="Life expectancy at age 60 (years)"]
+problem_2 = problem_2.loc[problem_2["Sex"]=="Male"]
+problem_2 = problem_2.loc[problem_2["Region"]=="Western Pacific"]
+problem_2 = problem_2.loc[problem_2["WorldBankIncomeGroup"]=="Lower_middle_income"]
+# Then merge with spirit
+ref = ["Country", "spirit_servings"]
+drink_merge = drinks[ref]
+problem_2 = problem_2.merge(drink_merge,
+                            on="Country",
+                            how="left")
+
+# Solution for problem no. 3
+# Columns needed: 2010, healthy life expectancy at birth, female, lower middle
+# & upper middle income countries, display
+problem_3 = lifeExp.loc[lifeExp["Year"]==2000]
+problem_3 = problem_3.loc[problem_3["Gho"]=="Healthy life expectancy (HALE) at birth (years)"]
+problem_3 = problem_3.loc[problem_3["Sex"]=="Female"]
+ref_inc = ["Upper_middle_income", "Lower_middle_income"]
+problem_3 = problem_3.loc[problem_3["WorldBankIncomeGroup"].isin(ref_inc)]
+# Then merge with wine
+ref = ["Country", "wine_servings"]
+drink_merge = drinks[ref]
+problem_3 = problem_3.merge(drink_merge,
+                            on="Country",
+                            how="left")
