@@ -1,0 +1,6 @@
+idx,Call_Date,AcctNum,AcctTen,Amt,Reason,Zone,Status
+1568,2018-01-06,110769279357,0-6 Mo,7451.10,G,VIS,Will pay partial
+1697,2018-01-19,101769279357,0-6 Mo,2422.79,I,VIS,Will pay in full
+2491,2018-02-08,111769279357,7 Mo & Up,2074.45,B,LSO,Contacted -  Will pay in full
+4691,2018-03-22,100769279357,0-6 Mo,39.94,L,LSO,Contacted - Already paid half
+4288,2018-02-25,100769075875,0-6 Mo,2284.95,E,SNA,Contacted -  Will pay in full

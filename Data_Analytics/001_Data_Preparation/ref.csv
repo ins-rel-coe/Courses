@@ -1,0 +1,30 @@
+Trans,Category,Class
+Check remaining load,Bal,Inquiry
+Check load,Bal,Inquiry
+Check balance,Bal,Inquiry
+Check remaining balance,Bal,Inquiry
+Check bal,Bal,Inquiry
+Balance check,Bal,Inquiry
+214,Bal,Inquiry
+Text 214,Bal,Inquiry
+Load balance,Bal,Inquiry
+Gigasurf50,Net,Promo
+GIGASurf50,Net,Promo
+GIGA50,Net,Promo
+Giga10,Net,Promo
+GIGASurf999,Net,Promo
+Text25,Text,Promo
+TXT25,Text,Promo
+text150,Text,Promo
+txt50,Text,Promo
+CALL10,Call,Promo
+Tawag20,Call,Promo
+Call20,Call,Promo
+Voice50,Call,Promo
+Call10,Call,Promo
+Call and Txt 150,CTXT,Promo
+Combo25,CTXT,Promo
+COMBO50,CTXT,Promo
+"Call, Text, Surf 200",ALLIN,Promo
+ALLIN250,ALLIN,Promo
+"Voice, Text & Data 1000",ALLIN,Promo
