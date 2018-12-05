@@ -1,3 +1,4 @@
+import numpy as np
 import pandas as pd
 import time
 
@@ -15,7 +16,6 @@ myColumns = ["Call Date:",
              "Zone",
              "Status"
         ]
-
 # Function that tests if a string is numeric
 def test_numeric(s):
     try:
@@ -47,6 +47,13 @@ num_duplicates = (
 dataset = dataset.drop_duplicates(keep="first")  # Drop duplicate rows
 
 # Note: keep="first" or keep="last" is case-to-case basis
+
+# Consider duplicates in AcctNum only
+"""
+dataset.duplicated(subset=["AcctNum"])  # Add more when needed
+dataset = dataset.drop_duplicates(subset=["AcctNum"],
+                                  keep="last")  # Drop duplicate AcctNum
+"""
 
 # Create a snapshot of the default row sequence
 dataset.insert(0, column="idx", value=dataset.index)
@@ -82,20 +89,25 @@ dataset[~dataset["Amt"].apply(lambda x: test_numeric(x))]
 # Inspect
 dataset["Amt"][~dataset["Amt"].apply(lambda x: test_numeric(x))]
 
-# Correct typing in Amt
-dataset["Amt"][dataset["Amt"].str.contains(r"\d+\.\.\d{0,2}", regex=True)]
+# Fix typing in Amt
+# Inspect
+dataset["Amt"][dataset["Amt"].str.contains(r"\d+\.\.\d{0,2}",
+                                           regex=True)]
 # Correct
-dataset["Amt"] = dataset["Amt"].str.replace(r"\.\.", ".", regex=True)
+dataset["Amt"] = dataset["Amt"].str.replace(r"\.\.", ".",
+                                            regex=True)
 # Scan
-dataset["Amt"][dataset["Amt"].str.contains(r"\d+\.\.\d{0,2}", regex=True)]
+dataset["Amt"][dataset["Amt"].str.contains(r"\d+\.\.\d{0,2}",
+                                           regex=True)]
 
 # Scan
 dataset["Amt"][dataset["Amt"].str.contains(r"\d+\.\d{3}", regex=True)]
 # Isolate
-review = review.append(dataset[dataset["Amt"].str.contains(r"\d+\.\d{3}",
-                               regex=True)])
+review = review.append(dataset[dataset["Amt"].str.contains(
+        r"\d+\.\d{3}", regex=True)])
 # Drop
-dataset = dataset[~dataset["Amt"].str.contains(r"\d+\.\d{3}", regex=True)]
+dataset = dataset[~dataset["Amt"].str.contains(r"\d+\.\d{3}",
+                                               regex=True)]
 
 # Scan
 dataset["Amt"][dataset["Amt"].str.contains(" ")]
@@ -107,11 +119,13 @@ dataset["Amt"][dataset["Amt"].str.contains(" ")]
 # Scan
 dataset["Amt"][dataset["Amt"].str.contains(",")]
 # Inspect
-dataset["Amt"][dataset["Amt"].str.contains(r"^\d{4}\,\d{2}$", regex=True)]
+dataset["Amt"][dataset["Amt"].str.contains(r"^\d{4}\,\d{2}$",
+                                           regex=True)]
 # Correct
 dataset["Amt"] = dataset["Amt"].str.replace(r"^(\d{4})\,(\d{2})$",
        r"\1.\2", regex=True)
-dataset["Amt"] = dataset["Amt"].str.replace(r"(.)\,$", r"\1", regex=True)
+dataset["Amt"] = dataset["Amt"].str.replace(r"(.)\,$", r"\1",
+                                            regex=True)
 dataset["Amt"] = dataset["Amt"].str.replace(",", "")
 # Scan
 dataset["Amt"][dataset["Amt"].str.contains(",")]
@@ -134,7 +148,7 @@ dataset["Amt"] = dataset["Amt"].str.replace(r"^(\d{2})\.(\d{2}\.\d)$",
 dataset["Amt"][dataset["Amt"].str.contains(r"^\d{2}\.\d{2}\.\d$",
                                            regex=True)]
 # Test again!
-dataset[~dataset["Amt"].apply(lambda x: test_numeric(x))]  # No more left
+dataset[~dataset["Amt"].apply(lambda x: test_numeric(x))]  # Zero!
 dataset["Amt"] = dataset["Amt"].astype("float64")
 
 # Correct typing in Reason
@@ -171,6 +185,10 @@ dataset["Status"].unique()
 # Convert amount to USD
 """
 dataset["Amt"] = dataset["Amt"] / 54
+"""
+# Convert to base-10 log
+"""
+dataset["Amt"] = dataset["Amt"].apply(np.log)
 """
 
 # Save to an excel file
