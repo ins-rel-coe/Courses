@@ -1,5 +1,10 @@
-import numpy as np
 import pandas as pd
+import time
+
+# Time start
+t_start = time.time()
+
+##############################START CODE###############################
 
 # Specify needed columns
 myColumns = ["Call Date:",
@@ -43,11 +48,6 @@ dataset = dataset.drop_duplicates(keep="first")  # Drop duplicate rows
 
 # Note: keep="first" or keep="last" is case-to-case basis
 
-# Consider duplicates in AcctNum only
-dataset.duplicated(subset=["AcctNum"])  # Add more when needed
-dataset = dataset.drop_duplicates(subset=["AcctNum"],
-                                  keep="last")  # Drop duplicate AcctNum
-
 # Create a snapshot of the default row sequence
 dataset.insert(0, column="idx", value=dataset.index)
 
@@ -78,11 +78,11 @@ dataset["AcctTen"].unique()
 
 # Check errors in numeric values
 # Scan
-dataset["Amt"][~dataset["Amt"].apply(lambda x: test_numeric(x))]
 dataset[~dataset["Amt"].apply(lambda x: test_numeric(x))]
-
-# Fix typing in Amt
 # Inspect
+dataset["Amt"][~dataset["Amt"].apply(lambda x: test_numeric(x))]
+
+# Correct typing in Amt
 dataset["Amt"][dataset["Amt"].str.contains(r"\d+\.\.\d{0,2}", regex=True)]
 # Correct
 dataset["Amt"] = dataset["Amt"].str.replace(r"\.\.", ".", regex=True)
@@ -172,13 +172,17 @@ dataset["Status"].unique()
 """
 dataset["Amt"] = dataset["Amt"] / 54
 """
-# Convert to base-10 log
-"""
-dataset["Amt"] = dataset["Amt"].apply(np.log)
-"""
 
 # Save to an excel file
 dataset.to_excel("output.xlsx", sheet_name="Sheet1", header=True,
                  index=False)
 review.to_excel("review.xlsx", sheet_name="Sheet1", header=True,
                  index=False)
+
+###############################END CODE################################
+
+# Time end
+t_end = time.time()
+print("Execution completed in "
+      + "{0:.2f}".format(t_end-t_start)
+	  + " second(s).")
