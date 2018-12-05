@@ -183,6 +183,6 @@ review.to_excel("review.xlsx", sheet_name="Sheet1", header=True,
 
 # Time end
 t_end = time.time()
-print("Execution completed in "
+print("\n\nExecution completed in "
       + "{0:.2f}".format(t_end-t_start)
-	  + " second(s).")
+	  + " second(s).\n\n")
